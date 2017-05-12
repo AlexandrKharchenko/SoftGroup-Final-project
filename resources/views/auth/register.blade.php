@@ -9,6 +9,7 @@
                     <div class="card-body">
 
                         <h4 class="card-title">Регистрация</h4>
+
                         <register-form></register-form>
 
 

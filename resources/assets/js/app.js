@@ -16,12 +16,16 @@ require('./bootstrap');
  */
 
 
+var moment = require('moment');
 
 
 Validator.addLocale(ru);
+Validator.installDateTimeValidators(moment)
 
 Vue.component('login-form', require('./components/Login.vue'));
+Vue.component('like-profile', require('./components/Like.vue'));
 Vue.component('register-form', require('./components/Register.vue'));
+Vue.component('user-profile', require('./components/UserProfile.vue'));
 
 Vue.use(VeeValidate, {
 

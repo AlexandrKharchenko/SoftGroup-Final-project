@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 
 class AppAuthController extends Controller
@@ -13,19 +15,53 @@ class AppAuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        return response()->json($request->all());
+        if (Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')])) {
+            // Authentication passed...
+            return response()->json([
+                'redirect' => route('user.profile.index')
+            ]);
+        }
+
+        return response()->json([
+            'email' => [
+                'Пользователь не найден или неверные данные.'
+            ]
+        ]);
     }
 
 
     public function register(Request $request)
     {
+
+
+
         $this->validate($request, [
-           'email' => 'email|min:988',
-           'name' => 'email:min:988',
+           'email' => 'required|email|unique:users',
+           'name' => 'required|min:3',
+           'password' => 'required|min:6|confirmed',
+
         ]);
 
 
 
-        return response()->json($request->all());
+
+        $user = User::create([
+            'name' => $request->get('name'),
+            'email' => $request->get('email'),
+            'password' => bcrypt($request->get('password')),
+        ]);
+
+
+        Auth::login($user);
+
+
+
+
+
+
+
+        return response()->json([
+            'redirect' => route('user.profile.index')
+        ]);
     }
 }

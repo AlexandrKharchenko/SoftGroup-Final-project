@@ -2,7 +2,7 @@
     <form class="" role="form" method="POST" action="" v-on:submit.prevent="submitRegister">
         <div class="form-group" v-bind:class="{ 'has-danger': errors.has('name') }">
             <label for="email">Фио</label>
-            <input id="name" type="text" class="form-control" name="name"   autofocus v-model="userData.name">
+            <input id="name" v-validate="'required|min:3'" type="text" class="form-control" name="name"   autofocus v-model="userData.name">
             <span v-show="errors.has('name')" class="form-control-feedback is-danger">{{ errors.first('name') }}</span>
 
         </div>
@@ -14,15 +14,15 @@
             <span v-show="errors.has('email')" class="form-control-feedback is-danger">{{ errors.first('email') }}</span>
         </div>
 
-        <div class="form-group"  v-bind:class="{ 'has-danger': errors.password }">
+        <div class="form-group"  v-bind:class="{ 'has-danger':  errors.has('password') }">
             <label for="password">Пароль</label>
-            <input id="password" type="password" class="form-control" name="password"  autofocus v-model="userData.password">
-
+            <input v-validate="'required|min:6|confirmed:password_confirmation'" id="password" type="password" class="form-control" name="password"  autofocus v-model="userData.password">
+            <span v-show="errors.has('password')" class="form-control-feedback is-danger">{{ errors.first('password') }}</span>
         </div>
 
-        <div class="form-group"  v-bind:class="{ 'has-danger': errors.password }">
-            <label for="password-confirm">Пароль повторно</label>
-            <input id="password-confirm" type="password" class="form-control" name="password-confirm"  autofocus v-model="userData['password-confirm']">
+        <div class="form-group" >
+            <label for="password_confirmation">Пароль повторно</label>
+            <input id="password_confirmation" type="password" class="form-control" name="password_confirmation"  autofocus v-model="userData['password_confirmation']">
 
         </div>
 
@@ -49,10 +49,10 @@
         data() {
             return {
                 userData: {
-                    name: '',
-                    email: '',
-                    password: '',
-                    "password-confirm": '',
+                    name: 'Name',
+                    email: 'mail@mail.com',
+                    password: '111111',
+                    "password_confirmation": '111111',
                 }
 
 
@@ -67,19 +67,21 @@
                     this.$http.post('/api/auth/register', userData).then(
                         // Success
                         (response) => {
+                            if(response.data.redirect)
+                                window.location = response.data.redirect;
 
-                            //this.$set(this, 'errors',  []);
                         },
                         // Error
                         (response) => {
+                            console.log(response)
                             for(var  i in response.data){
                                 ErrorStorage.add(i, response.data[i][0] , 'email')
                             }
                         }
                     );
                 }).catch(() => {
-                    // eslint-disable-next-line
-                    alert('Correct them errors!');
+
+
                 });
 
 

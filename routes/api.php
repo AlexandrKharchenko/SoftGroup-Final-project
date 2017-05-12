@@ -17,9 +17,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::group(['prefix' => 'auth'], function () {
+Route::group(['prefix' => 'profile' , 'middleware' => 'auth'], function () {
 
-    Route::post('/login', ['as' => 'api.auth.login', 'uses' => 'AppAuthController@login']);
-    Route::post('/register', ['as' => 'api.auth.register', 'uses' => 'AppAuthController@register']);
+
+
 
 });

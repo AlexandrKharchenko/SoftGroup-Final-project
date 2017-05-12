@@ -47,8 +47,8 @@
         data() {
             return {
                 userData : {
-                    email: '',
-                    password: ''
+                    email: 'mail@mail.com',
+                    password: '111111'
                 },
                 errors: [],
             }
@@ -59,14 +59,12 @@
                 this.$http.post('/api/auth/login', this.userData).then(
                     // Success
                     (response) => {
-                        console.log(response.body.login)
-                        this.$set(this, 'errors',  []);
+                        if(response.data.redirect)
+                            window.location = response.data.redirect;
                     },
                     // Error
                     (response) => {
-                        console.log('Error')
 
-                        this.$set(this, 'errors',  response.data);
 
                     }
                 );
