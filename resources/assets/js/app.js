@@ -14,9 +14,45 @@ require('./bootstrap');
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
+import Echo from "laravel-echo"
+
 
 
 var moment = require('moment');
+
+var toast = require('jquery-toast-plugin');
+
+//var socket = io('http://laravel.iused.top');
+
+
+
+
+window.Echo = new Echo ({
+     broadcaster: 'socket.io',
+     host: window.location.hostname
+});
+
+
+
+
+
+console.log(window.location.hostname);
+console.log(window.Echo);
+
+//window.Echo.join('notify');
+
+window.Echo.channel('notify')
+    .listen("UserUpdateProfile", function () {
+
+        console.log('test YES');
+    });
+
+
+
+
+
+
+
 
 
 Validator.addLocale(ru);

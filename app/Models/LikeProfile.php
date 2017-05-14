@@ -38,6 +38,11 @@ class LikeProfile extends Model
         return $this->belongsToMany('App\Models\User' , 'like_profile' , 'profile_id' , 'user_id' );
     }
 
+    public function userOne()
+    {
+        return $this->belongsTo('App\Models\User' , 'user_id'  );
+    }
+
 
 
 

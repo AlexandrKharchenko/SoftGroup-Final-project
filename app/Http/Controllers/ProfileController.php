@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserUpdateProfile;
+use App\Models\LikeProfile;
 use App\Models\User;
 use App\Models\UserProfile;
 use Carbon\Carbon;
 use function foo\func;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redis;
 use Intervention\Image\Image;
+
+use League\Fractal;
+use League\Fractal\Manager;
 
 
 class ProfileController extends Controller
@@ -32,17 +38,21 @@ class ProfileController extends Controller
     public function detail($id)
     {
 
-        $profile = UserProfile::with(['user.likes' => function($q) use($id){
-            $q->where('profile_id' ,$id);
-        }])->where('id' , $id)->first();
 
-        
+
+        broadcast(new UserUpdateProfile('broadcast'));
+        $profile = UserProfile::with(['likes.profile'])->where('id' , $id)->first();
+
+
+
         if(!$profile)
             abort(404);
 
         $data = [
-            'profile' => $profile
+            'profile' => $profile,
+
         ];
+
         return view('front-end/profile/detail' , $data);
     }
 
@@ -86,15 +96,60 @@ class ProfileController extends Controller
 
     public function toggleLike($id, Request $request)
     {
+        if(!Auth::check())
+            return response()->setStatusCode(401);
+
         $profile = UserProfile::find($id);
         if(!$profile)
-            return null;
+            return response()->setStatusCode(404);
 
 
-        $res = \Auth::User()->likes()->toggle($profile);
+        $res = Auth::User()->likes()->toggle($profile);
         return $res;
 
 
+    }
+
+
+
+    public function apiGetProfileLikes($id , UserProfile $userProfile)
+    {
+        $profile = $userProfile->find($id);
+        if(!$profile) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Профиль не найден',
+            ])->setStatusCode(402);
+        }
+
+
+        $likes = $profile->likes()->with('profile')->get();
+
+        $likeResource = new Fractal\Resource\Collection($likes, function($like) {
+            return [
+                'user_name' => "{$like->profile->first_name} {$like->profile->last_name}",
+                'url_profile' => route('user.profile.detail' , $like->profile->id)
+            ];
+        });
+
+        $fractalManager = new Manager();
+        $likeData = $fractalManager->createData($likeResource)->toArray();
+
+
+        # Если авторизован проверим ставил ли текущий юзер лайк профилю
+        if(Auth::check() && Auth::user()->likes()->where('profile_id' , $id)->first()){
+            $data = [
+                'isLike' => true,
+                'likes' => $likeData,
+            ];
+        } else {
+            $data = [
+                'isLike' => false,
+                'likes' => $likeData,
+            ];
+        }
+
+        return response()->json($data);
     }
 
 

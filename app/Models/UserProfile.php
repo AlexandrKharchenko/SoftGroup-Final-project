@@ -41,9 +41,19 @@ class UserProfile extends Model
     ];
 
 
+    public function scopeProfile($query , $idProfile)
+    {
+        return $query->where('profile_id' , $idProfile);
+    }
+
     public function user()
     {
         return $this->belongsTo('App\Models\User' , 'user_id');
+    }
+
+    public function likes()
+    {
+        return $this->belongsToMany('App\Models\User' , 'like_profile', 'profile_id' , 'user_id');
     }
 
 

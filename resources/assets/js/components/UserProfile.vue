@@ -1,6 +1,6 @@
 <template>
     <form class="" role="" method="POST" action="" v-on:submit.prevent="updateProfile" enctype="multipart/form-data" id="updateProfileId">
-        <div class="row">
+        <div class="row wBg">
 
             <div class="col-md-4">
 
@@ -147,15 +147,34 @@
                     this.$http.post('/api/profile/update', formData).then(
                         // Success
                         (response) => {
-                            if(response.data.user)
-                                VC.updateUserDataAfterRequest(response.data.user);
+                            if(response.data.profile) {
+                                VC.updateUserDataAfterRequest(response.data.profile);
+
+                                $.toast({
+                                    icon: 'success',
+                                    heading: 'Профиль обновлен!',
+
+                                    position: 'top-right',
+                                    stack: false
+                                });
+
+                            }
 
 
                         },
                         // Error
                         (response) => {
-                            if(response.status == 500)
+                            if(response.status == 500){
+                                $.toast({
+                                    icon: 'error',
+                                    heading: 'Ошибка сервера!',
+                                    text: 'Мы скоро с этим разберемся! ;)',
+                                    position: 'top-right',
+                                    stack: false
+                                });
                                 return false;
+                            }
+
 
                             for (var i in response.data) {
                                 ErrorStorage.add(i, response.data[i][0], 'email')
@@ -188,7 +207,7 @@
                 reader.readAsDataURL(file);
             },
             updateUserDataAfterRequest(userData){
-                this.$set(this , 'userData' , userData.profile);
+                this.$set(this , 'userData' , userData);
             },
 
         }

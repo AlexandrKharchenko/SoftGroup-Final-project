@@ -1,16 +1,16 @@
 <template>
     <form class="" role="form" method="POST" action="" v-on:submit.prevent="submitLogin">
-        <div class="form-group" v-bind:class="{ 'has-danger': errors.email }">
+        <div class="form-group" v-bind:class="{ 'has-danger': errors.has('email') }">
             <label for="email">E-Mail</label>
             <input id="email" type="email" class="form-control" name="email"  required autofocus v-model="userData.email">
-            <div class="form-control-feedback" v-if="errors.email"> {{errors.email[0]}}</div>
+            <span v-show="errors.has('email')" class="form-control-feedback is-danger">{{ errors.first('email') }}</span>
         </div>
 
-        <div class="form-group"  v-bind:class="{ 'has-danger': errors.password }">
+        <div class="form-group"  v-bind:class="{ 'has-danger': errors.has('password') }">
 
             <label for="password">Пароль</label>
             <input id="password" type="password" class="form-control" name="password" required autofocus v-model="userData.password">
-            <div class="form-control-feedback" v-if="errors.password"> {{errors.password[0]}}</div>
+            <span v-show="errors.has('password')" class="form-control-feedback is-danger">{{ errors.first('password') }}</span>
         </div>
 
 
@@ -19,7 +19,7 @@
 
             <div class="checkbox">
                 <label>
-                    <input type="checkbox" name="remember"> Запомнить
+                    <input v-model="userData.remember" type="checkbox" name="remember"> Запомнить
                 </label>
             </div>
 
@@ -48,26 +48,37 @@
             return {
                 userData : {
                     email: 'mail@mail.com',
-                    password: '111111'
+                    password: '111111',
+                    remember: true,
                 },
-                errors: [],
+
             }
         },
         methods: {
             submitLogin () {
+                let userData = this.userData;
+                let ErrorStorage = this.errors;
+                this.$validator.validateAll().then(() => {
+                    this.$http.post('/api/auth/login', this.userData).then(
+                        // Success
+                        (response) => {
+                            if(response.data.redirect)
+                                window.location = response.data.redirect;
 
-                this.$http.post('/api/auth/login', this.userData).then(
-                    // Success
-                    (response) => {
-                        if(response.data.redirect)
-                            window.location = response.data.redirect;
-                    },
-                    // Error
-                    (response) => {
+                        },
+                        // Error
+                        (response) => {
+                            for(var  i in response.data){
+                                console.log(i)
+                                ErrorStorage.add(i, response.data[i][0])
+                            }
+                        }
+                    );
+                }).catch(() => {
 
 
-                    }
-                );
+                });
+
             }
         }
     }

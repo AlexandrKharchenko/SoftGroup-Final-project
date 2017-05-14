@@ -1,5 +1,9 @@
 <template>
-    <button v-on:click="toggleLike" class="btn btn-block btn-outline-danger"><i class="fa"></i> {{likeTxt}}</button>
+    <div>
+        <button v-on:click="toggleLike" v-html="likeTxt" class="btn btn-block btn-outline-danger"></button>
+
+    </div>
+
 </template>
 
 <script>
@@ -7,18 +11,38 @@
         mounted() {
 
         },
+        created() {
+
+
+            this.$http.post('/profile/likes/get/' + this.profileid).then(
+                // Success
+                (response) => {
+                    //console.log(response.data);
+                    this.$set(this ,'existLike' , response.data.isLike);
+                    this.$set(this ,'likes' , response.data.isLike);
+                    this.$set(this ,'likesCount' , response.data.likes.data.length);
+                },
+                // Error
+                (response) => {
+
+
+                }
+            );
+        },
         data() {
             return {
                 existLike: false,
+                likes: [],
+                likesCount: 0,
             }
         },
         computed: {
             likeTxt () {
                 let btnTxt = '';
                 if(this.existLike){
-                    btnTxt = 'Убрать лайк';
+                    btnTxt = this.likesCount+' <i class="fa fa-heart" aria-hidden="true"></i>';
                 } else {
-                    btnTxt = 'Поставить лайк';
+                    btnTxt = this.likesCount+' <i class="fa fa-heart-o" aria-hidden="true"></i>';
                 }
                 return btnTxt;
             }
@@ -30,15 +54,27 @@
                 this.$http.post('/profile/like/' + this.profileid, this.userData).then(
                     // Success
                     (response) => {
-                        console.log(response.data);
+                        //console.log(response.data);
                         if(response.data.attached.length > 0){
                             this.$set(this ,'existLike' , true);
+                            this.$set(this ,'likesCount' , this.likesCount + 1);
                         } else {
                             this.$set(this ,'existLike' , false);
+                            this.$set(this ,'likesCount' , this.likesCount - 1);
                         }
                     },
                     // Error
-                    (response) => {
+                    (error) => {
+                        if(error.status === 401) {
+                            $.toast({
+                                icon: 'error',
+                                heading: 'Авторизуйтесь!',
+                                text: 'Лайкать можно после авторизации ;)',
+                                position: 'top-right',
+                                stack: true
+                            })
+                        }
+
 
 
                     }

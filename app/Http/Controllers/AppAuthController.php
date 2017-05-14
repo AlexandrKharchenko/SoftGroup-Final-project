@@ -15,7 +15,7 @@ class AppAuthController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        if (Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')])) {
+        if (Auth::attempt(['email' => $request->get('email'), 'password' => $request->get('password')] , $request->get('remember'))) {
             // Authentication passed...
             return response()->json([
                 'redirect' => route('user.profile.index')
@@ -26,7 +26,7 @@ class AppAuthController extends Controller
             'email' => [
                 'Пользователь не найден или неверные данные.'
             ]
-        ]);
+        ])->setStatusCode(422);
     }
 
 

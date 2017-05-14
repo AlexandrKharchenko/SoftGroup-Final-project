@@ -42,7 +42,7 @@ Vue.http.headers.common['X-CSRF-TOKEN'] = window.Laravel.csrfToken;
  * allows your team to easily build robust real-time web applications.
  */
 
-// import Echo from 'laravel-echo'
+
 
 // window.Pusher = require('pusher-js');
 
@@ -50,3 +50,11 @@ Vue.http.headers.common['X-CSRF-TOKEN'] = window.Laravel.csrfToken;
 //     broadcaster: 'pusher',
 //     key: 'your-pusher-key'
 // });
+
+//var io = require('socket.io-client');
+
+//import io from 'socket.io-client';
+
+
+
+

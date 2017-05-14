@@ -75,7 +75,7 @@
                         (response) => {
                             console.log(response)
                             for(var  i in response.data){
-                                ErrorStorage.add(i, response.data[i][0] , 'email')
+                                ErrorStorage.add(i, response.data[i][0])
                             }
                         }
                     );

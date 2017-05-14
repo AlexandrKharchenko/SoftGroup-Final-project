@@ -47,22 +47,36 @@ Route::get('/facker', function () {
 
 
 Route::group(['middleware' => ['web' , 'auth'] , 'prefix' => 'account'], function () {
+    Route::get('/', 'AccountController@index')->name('user.account.index');
     Route::get('/profile', 'ProfileController@index')->name('user.profile.index');
+    Route::get('/profile/favorite', 'AccountController@likeProfile')->name('account.profile.favorite');
 
 
 });
 
 
+# Профиль для авторизованных пользователей
 Route::group(['middleware' => ['web' , 'auth']], function () {
     Route::get('/profiles/all', 'ProfileController@all')->name('user.profile.lists');
-    Route::get('/profile/detail/{id}', 'ProfileController@detail')->name('user.profile.detail');
+
     Route::post('/profile/like/{id}', 'ProfileController@toggleLike')->name('user.profile.like');
+
+});
+
+# Профиль для не авторизованных пользователей
+Route::group(['middleware' => ['web']], function () {
+    Route::get('/profile/detail/{id}', 'ProfileController@detail')->name('user.profile.detail');
+    Route::post('/profile/likes/get/{id}', 'ProfileController@apiGetProfileLikes')->name('user.profile.likes.get');
+
+
 });
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('/home', 'HomeController@index')->name('home');
     Route::get('/register', 'Auth\RegisterController@showRegistrationForm')->name('register');
     Route::get('/login', 'Auth\LoginController@showLoginForm')->name('login');
+    Route::get('/logout', 'Auth\LoginController@logout')->name('logout');
+    Route::get('/', 'HomeController@index')->name('home');
 });
 
 Route::group(['prefix' => 'api/profile' ,'middleware' => ['web' , 'auth']], function () {

@@ -1,3 +1,12 @@
+$gray-color-1: #f7f7f7;
+
+.wBgContainer {
+  background: #fff;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  border-radius: 5px;
+}
+
 div#login {
   margin-top: 30px;
 }
@@ -6,23 +15,19 @@ body {
   background-color: #efefef;
 }
 
-
 .app-head-nav {
   margin-bottom: 40px;
 }
-
 
 .profile-edit-preview-photo {
   width: 100%;
 }
 
-
-
-  ul.pagination {
-    margin: 0 auto;
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
+ul.pagination {
+  margin: 0 auto;
+  margin-top: 50px;
+  margin-bottom: 50px;
+}
 
 .container.with-bg {
   background: #fff;
@@ -32,4 +37,18 @@ body {
 
 .profile-item {
   margin-bottom: 40px;
+}
+
+._profiler {
+  background: #fff;
+  width: 100%;
+}
+
+.wBg {
+  @extend .wBgContainer;
+}
+
+
+.card-gray {
+  background: $gray-color-1;
 }
