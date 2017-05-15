@@ -32,7 +32,7 @@
             </button>
 
             <a class="btn btn-link" href="/password/reset" >
-                Забыли пароль?
+
             </a>
 
         </div>
@@ -47,8 +47,8 @@
         data() {
             return {
                 userData : {
-                    email: 'mail@mail.com',
-                    password: '111111',
+                    email: '',
+                    password: '',
                     remember: true,
                 },
 

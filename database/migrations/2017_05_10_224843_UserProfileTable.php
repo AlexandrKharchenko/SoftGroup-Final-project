@@ -20,10 +20,12 @@ class UserProfileTable extends Migration
             $table->string('last_name');
             $table->string('middle_name')->nullable();
             $table->date('bdate');
+
             $table->string('phone')->nullable();
             $table->string('github_url')->nullable();
             $table->string('photo')->nullable();
             $table->string('about')->nullable();
+            $table->boolean('active');
             $table->timestamps();
         });
     }

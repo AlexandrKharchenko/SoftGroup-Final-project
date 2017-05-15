@@ -27,6 +27,7 @@ class UserProfile extends Model
         'phone',
         'photo',
         'about',
+        'active',
         'created_at',
         'updated_at',
     ];
@@ -41,9 +42,9 @@ class UserProfile extends Model
     ];
 
 
-    public function scopeProfile($query , $idProfile)
+    public function scopeActive($query)
     {
-        return $query->where('profile_id' , $idProfile);
+        return $query->where('active' , 1);
     }
 
     public function user()

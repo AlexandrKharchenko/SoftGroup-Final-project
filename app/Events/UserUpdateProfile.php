@@ -16,15 +16,19 @@ class UserUpdateProfile implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $msg;
+    public $data;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct($profile)
     {
-        $this->msg = ['adsa' =>  'kuku'];
+
+        $this->data = [
+            'user_name' => "{$profile->first_name} {$profile->last_name}",
+            'url' => route('user.profile.detail' , $profile->id),
+        ];
     }
 
     /**
@@ -34,8 +38,7 @@ class UserUpdateProfile implements ShouldBroadcastNow
      */
     public function broadcastOn()
     {
-        //return new Channel('updated-profile');
-        //return new PrivateChannel('updated-profile');
+
         return [
             "notify"
         ];
@@ -43,10 +46,7 @@ class UserUpdateProfile implements ShouldBroadcastNow
     }
 
 
-//    public function broadcastAs()
-//    {
-//       // return 'server.created';
-//    }
+
 
 
 

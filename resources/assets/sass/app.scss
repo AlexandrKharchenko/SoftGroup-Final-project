@@ -52,3 +52,19 @@ ul.pagination {
 .card-gray {
   background: $gray-color-1;
 }
+
+.jq-toast-single a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  border-bottom: none;
+  padding-bottom: 4px;
+  padding-top: 4px;
+  font-size: 12px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.photo-profile {
+  width: 100%;
+}

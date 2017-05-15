@@ -42,9 +42,33 @@ console.log(window.Echo);
 //window.Echo.join('notify');
 
 window.Echo.channel('notify')
-    .listen("UserUpdateProfile", function () {
+    .listen("UserUpdateProfile", function (res) {
 
-        console.log('test YES');
+        $.toast({
+            icon: 'info',
+            heading: res.data.user_name + ' Обновил свой профиль.',
+            hideAfter : 5000,
+            stack : 10,
+            text: '<a  class="btn btn-sm btn-success" href="'+res.data.url+'">Посмотреть профиль</a>',
+            position: 'top-right',
+
+        })
+
+
+    })
+    .listen("UserCreateProfile", function (res) {
+
+        $.toast({
+            icon: 'info',
+            heading: res.data.user_name + ' Создал профиль',
+            hideAfter : 5000,
+            stack : 10,
+            text: '<a  class="btn btn-sm btn-success" href="'+res.data.url+'">Посмотреть профиль</a>',
+            position: 'top-right',
+
+        });
+
+
     });
 
 
@@ -62,6 +86,7 @@ Vue.component('login-form', require('./components/Login.vue'));
 Vue.component('like-profile', require('./components/Like.vue'));
 Vue.component('register-form', require('./components/Register.vue'));
 Vue.component('user-profile', require('./components/UserProfile.vue'));
+Vue.component('profile-status', require('./components/ProfileStatus.vue'));
 
 Vue.use(VeeValidate, {
 

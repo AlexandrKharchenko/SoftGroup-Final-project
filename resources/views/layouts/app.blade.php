@@ -49,6 +49,11 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{route('user.profile.lists')}}">Профили</a>
                 </li>
+                @role('admin')
+                <li class="nav-item">
+                    <a class="nav-link" href="{{route('admin.profiles.all')}}">Админ панель</a>
+                </li>
+                @endrole()
 
 
             </ul>
@@ -95,6 +100,9 @@
 
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="https://unpkg.com/imagesloaded@4.1/imagesloaded.pkgd.min.js"></script>
 <script src="{{ asset('assets/noty/jquery.toast.min.js') }}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
@@ -106,5 +114,17 @@
 <!-- Scripts -->
 
 <script src="{{ asset('js/app.js') }}"></script>
+<script>
+    var $grid = $('.wrap-grid-profile').masonry({
+        // options
+        itemSelector: '.profile-item',
+
+    });
+
+    $grid.imagesLoaded().progress( function() {
+        $grid.masonry('layout');
+    });
+
+</script>
 </body>
 </html>

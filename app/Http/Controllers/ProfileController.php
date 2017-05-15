@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserCreateProfile;
+
 use App\Events\UserUpdateProfile;
 use App\Models\LikeProfile;
 use App\Models\User;
@@ -30,7 +32,7 @@ class ProfileController extends Controller
     public function all()
     {
         $data = [
-            'profiles' => UserProfile::paginate(10)
+            'profiles' => UserProfile::active()->paginate(10)
         ];
         return view('front-end/profile/all' , $data);
     }
@@ -38,15 +40,12 @@ class ProfileController extends Controller
     public function detail($id)
     {
 
-
-
-        broadcast(new UserUpdateProfile('broadcast'));
-        $profile = UserProfile::with(['likes.profile'])->where('id' , $id)->first();
-
-
+        $profile = UserProfile::active()->with(['likes.profile' , 'user'])->where('id' , $id)->first();
 
         if(!$profile)
             abort(404);
+
+
 
         $data = [
             'profile' => $profile,
@@ -63,21 +62,45 @@ class ProfileController extends Controller
             'first_name' => 'required|min:3',
             'last_name' => 'required|min:3',
             'middle_name' => 'required|min:3',
-            'github_url' => 'min:3',
+            'github_url' => 'min:3|url',
             'bdate' => 'required|date_format:d.m.Y',
             'about' => 'min:20',
         ]);
 
 
+
         // TODO: Загрузка изображения
+        if($request->file('photo') && $request->get('editPhoto') == 'true'){
+
+            $this->validate($request, [
+                'photo' => 'image'
+            ]);
+
+
+            $ext = $request->file('photo')->getClientOriginalExtension();
+            $photoName = Auth::id().'avatar.' . $ext;
+            $request->file('photo')->move(public_path('photos') , $photoName);
+
+        }
 
         $profile = UserProfile::where('user_id' , \Auth::id())->first();
 
 
+        if($profile)
+            broadcast(new UserUpdateProfile($profile));
+
         if(!$profile) {
             $profile = new UserProfile;
-            $profile->user_id = \Auth::id();
+            $profile->user_id = Auth::id();
+            $profile->active = 1;
+
+            broadcast(new UserCreateProfile($profile));
         }
+
+
+        if(isset($photoName))
+            $profile->photo = 'photos/' . $photoName;
+
         $profile->first_name = $request->get('first_name');
         $profile->last_name = $request->get('last_name');
         $profile->middle_name = $request->get('middle_name');

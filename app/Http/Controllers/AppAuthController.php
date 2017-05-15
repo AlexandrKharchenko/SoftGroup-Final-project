@@ -37,27 +37,21 @@ class AppAuthController extends Controller
 
         $this->validate($request, [
            'email' => 'required|email|unique:users',
-           'name' => 'required|min:3',
            'password' => 'required|min:6|confirmed',
 
         ]);
 
 
-
-
         $user = User::create([
-            'name' => $request->get('name'),
             'email' => $request->get('email'),
             'password' => bcrypt($request->get('password')),
+            'active' => 1,
         ]);
+
+        $user->roles()->attach(2);
 
 
         Auth::login($user);
-
-
-
-
-
 
 
         return response()->json([

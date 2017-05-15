@@ -1,12 +1,5 @@
 <template>
     <form class="" role="form" method="POST" action="" v-on:submit.prevent="submitRegister">
-        <div class="form-group" v-bind:class="{ 'has-danger': errors.has('name') }">
-            <label for="email">Фио</label>
-            <input id="name" v-validate="'required|min:3'" type="text" class="form-control" name="name"   autofocus v-model="userData.name">
-            <span v-show="errors.has('name')" class="form-control-feedback is-danger">{{ errors.first('name') }}</span>
-
-        </div>
-
 
         <div class="form-group" v-bind:class="{ 'has-danger': errors.has('email') }">
             <label for="email">E-Mail</label>
@@ -49,10 +42,9 @@
         data() {
             return {
                 userData: {
-                    name: 'Name',
-                    email: 'mail@mail.com',
-                    password: '111111',
-                    "password_confirmation": '111111',
+                    email: '',
+                    password: '',
+                    "password_confirmation": '',
                 }
 
 
@@ -73,7 +65,9 @@
                         },
                         // Error
                         (response) => {
-                            console.log(response)
+                            if(response.status === 500)
+                                return false;
+
                             for(var  i in response.data){
                                 ErrorStorage.add(i, response.data[i][0])
                             }

@@ -5,12 +5,14 @@
             <div class="col-md-4">
 
                 <div class="form-group" v-bind:class="{ 'has-danger': errors.has('photo') }">
-                    <img class="profile-edit-preview-photo"  v-show="previewPhoto" :src="previewPhoto" />
                     <label for="photo">Фото профиля</label>
+                    <img class="profile-edit-preview-photo"  v-show="previewPhoto" :src="previewPhoto" />
+
                     <input id="photo"  type="file" class="form-control"
-                           name="photo"  @change="changeUserPhoto">
+                           name="photo"  @change="changeUserPhoto" v-validate="'image'">
                     <span v-show="errors.has('photo')"
                           class="form-control-feedback is-danger">{{ errors.first('photo') }}</span>
+                    <button type="button" v-show="editPhoto" v-on:click="cancelEditPhoto" class="btn btn-sm btn-danger btn-block">Отменить редактирование фото</button>
                 </div>
 
                 <div class="form-group" v-bind:class="{ 'has-danger': errors.has('first_name') }">
@@ -62,7 +64,7 @@
 
                 <div class="form-group" v-bind:class="{ 'has-danger': errors.has('github_url') }">
                     <label for="phone">Профиль GitHub</label>
-                    <input id="github_url" v-validate="'required|min:3'" type="text" class="form-control"
+                    <input id="github_url" v-validate="'required|url'" type="text" class="form-control"
                            name="github_url"
                            placeholder="Профиль GitHub" autofocus v-model="userData.github_url">
                     <span v-show="errors.has('github_url')"
@@ -107,6 +109,8 @@
                     if(response.data.profile)
                         this.userData = response.data.profile;
 
+                    this.previewPhoto = '/' + response.data.profile.photo;
+
 
                 },
                 // Error
@@ -128,6 +132,7 @@
                     photo: null,
                 },
                 previewPhoto: '',
+                editPhoto: false,
             }
         },
         methods: {
@@ -137,6 +142,8 @@
                 for ( let key in this.userData ) {
                     formData.append(key, this.userData[key])
                 }
+
+                formData.append('editPhoto', this.editPhoto)
 
 
                 let userData = this.userData;
@@ -188,7 +195,11 @@
                 });
 
             },
+            cancelEditPhoto () {
+                this.$set(this, 'editPhoto' , false);
+            },
             changeUserPhoto (e) {
+                this.$set(this, 'editPhoto' , true);
                 let files = e.target.files || e.dataTransfer.files;
                 if (!files.length)
                     return;

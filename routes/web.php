@@ -21,7 +21,7 @@ Route::get('/facker', function () {
         $user = User::create([
             'email' => $faker->unique()->email,
             'password'  => bcrypt('dsadas'),
-            'name'  => 'dsadsa',
+
 
 
         ]);
@@ -33,7 +33,8 @@ Route::get('/facker', function () {
             'bdate' => \Carbon\Carbon::now()->format('d.m.Y'),
             'about' => $faker->text(150),
             'github_url' => 'http:://github.com',
-            'user_id'   => $user->id
+            'user_id'   => $user->id,
+            'active'   => 1
         ]);
 
     }
@@ -93,6 +94,16 @@ Route::group(['prefix' => 'api/auth' , 'middleware' => ['web']], function () {
     Route::post('/login', ['as' => 'api.auth.login', 'uses' => 'AppAuthController@login']);
     Route::post('/register', ['as' => 'api.auth.register', 'uses' => 'AppAuthController@register']);
 
+});
+
+
+
+# Admin
+
+Route::group(['prefix' => 'admin' , 'middleware' => ['web' , 'auth' , 'role:admin' ]], function () {
+    Route::get('/profiles', 'AdminController@manageProfile')->name('admin.profiles.all');
+
+    Route::post('/profile/toggle-status/{id}', 'AdminController@profileToggleStatus')->name('admin.profiles.status.toggle');
 });
 
 

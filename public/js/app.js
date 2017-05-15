@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "./";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 167);
+/******/ 	return __webpack_require__(__webpack_require__.s = 170);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -1899,7 +1899,7 @@ function loadLocale(name) {
             module && module.exports) {
         try {
             oldLocale = globalLocale._abbr;
-            __webpack_require__(155)("./" + name);
+            __webpack_require__(156)("./" + name);
             // because defineLocale currently also sets the global locale, we
             // want to undo that for lazy loaded locales
             getSetGlobalLocale(oldLocale);
@@ -26824,12 +26824,12 @@ module.exports = function(module) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vee_validate_dist_locale_ru__ = __webpack_require__(156);
+/* WEBPACK VAR INJECTION */(function($) {Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vee_validate_dist_locale_ru__ = __webpack_require__(157);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_vee_validate_dist_locale_ru___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_vee_validate_dist_locale_ru__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vee_validate__ = __webpack_require__(157);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vee_validate__ = __webpack_require__(158);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_vee_validate___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_vee_validate__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_laravel_echo__ = __webpack_require__(153);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_laravel_echo__ = __webpack_require__(154);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_laravel_echo___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_laravel_echo__);
 
 
@@ -26840,7 +26840,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-__webpack_require__(151);
+__webpack_require__(152);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -26851,7 +26851,7 @@ __webpack_require__(151);
 
 var moment = __webpack_require__(0);
 
-var toast = __webpack_require__(152);
+var toast = __webpack_require__(153);
 
 //var socket = io('http://laravel.iused.top');
 
@@ -26866,18 +26866,38 @@ console.log(window.Echo);
 
 //window.Echo.join('notify');
 
-window.Echo.channel('notify').listen("UserUpdateProfile", function () {
+window.Echo.channel('notify').listen("UserUpdateProfile", function (res) {
 
-    console.log('test YES');
+    $.toast({
+        icon: 'info',
+        heading: res.data.user_name + ' Обновил свой профиль.',
+        hideAfter: 5000,
+        stack: 10,
+        text: '<a  class="btn btn-sm btn-success" href="' + res.data.url + '">Посмотреть профиль</a>',
+        position: 'top-right'
+
+    });
+}).listen("UserCreateProfile", function (res) {
+
+    $.toast({
+        icon: 'info',
+        heading: res.data.user_name + ' Создал профиль',
+        hideAfter: 5000,
+        stack: 10,
+        text: '<a  class="btn btn-sm btn-success" href="' + res.data.url + '">Посмотреть профиль</a>',
+        position: 'top-right'
+
+    });
 });
 
 __WEBPACK_IMPORTED_MODULE_1_vee_validate__["Validator"].addLocale(__WEBPACK_IMPORTED_MODULE_0_vee_validate_dist_locale_ru___default.a);
 __WEBPACK_IMPORTED_MODULE_1_vee_validate__["Validator"].installDateTimeValidators(moment);
 
-Vue.component('login-form', __webpack_require__(159));
-Vue.component('like-profile', __webpack_require__(158));
-Vue.component('register-form', __webpack_require__(160));
-Vue.component('user-profile', __webpack_require__(161));
+Vue.component('login-form', __webpack_require__(160));
+Vue.component('like-profile', __webpack_require__(159));
+Vue.component('register-form', __webpack_require__(162));
+Vue.component('user-profile', __webpack_require__(163));
+Vue.component('profile-status', __webpack_require__(161));
 
 Vue.use(__WEBPACK_IMPORTED_MODULE_1_vee_validate___default.a, {
 
@@ -26888,6 +26908,7 @@ Vue.use(__WEBPACK_IMPORTED_MODULE_1_vee_validate___default.a, {
 var app = new Vue({
     el: '#app'
 });
+/* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
 
 /***/ }),
 /* 128 */
@@ -27875,8 +27896,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             userData: {
-                email: 'mail@mail.com',
-                password: '111111',
+                email: '',
+                password: '',
                 remember: true
             }
 
@@ -27921,6 +27942,48 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    mounted: function mounted() {},
+    created: function created() {
+
+        this.$set(this, 'setStatus', this.status);
+    },
+    data: function data() {
+        return {
+            setStatus: false
+
+        };
+    },
+
+    computed: {
+        text: function text() {
+            return this.setStatus == true ? 'Деактивировать' : 'Активировать';
+        }
+    },
+    props: ['status', 'profileid'],
+    methods: {
+        toggleStatus: function toggleStatus() {
+            var _this = this;
+
+            this.$http.post('/admin/profile/toggle-status/' + this.profileid, { status: !this.setStatus }).then(
+            // Success
+            function (response) {
+                if (response.action = "success") _this.$set(_this, 'setStatus', !_this.setStatus);
+            },
+            // Error
+            function (error) {});
+        }
+    }
+});
+
+/***/ }),
+/* 150 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
 //
 //
 //
@@ -27964,10 +28027,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     data: function data() {
         return {
             userData: {
-                name: 'Name',
-                email: 'mail@mail.com',
-                password: '111111',
-                "password_confirmation": '111111'
+                email: '',
+                password: '',
+                "password_confirmation": ''
             }
 
         };
@@ -27987,7 +28049,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 },
                 // Error
                 function (response) {
-                    console.log(response);
+                    if (response.status === 500) return false;
+
                     for (var i in response.data) {
                         ErrorStorage.add(i, response.data[i][0]);
                     }
@@ -27998,11 +28061,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 });
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function($) {Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
 //
 //
 //
@@ -28112,6 +28177,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         function (response) {
             console.log(response.data);
             if (response.data.profile) _this.userData = response.data.profile;
+
+            _this.previewPhoto = '/' + response.data.profile.photo;
         },
         // Error
         function (response) {});
@@ -28128,7 +28195,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 about: '',
                 photo: null
             },
-            previewPhoto: ''
+            previewPhoto: '',
+            editPhoto: false
         };
     },
 
@@ -28141,6 +28209,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             for (var key in this.userData) {
                 formData.append(key, this.userData[key]);
             }
+
+            formData.append('editPhoto', this.editPhoto);
 
             var userData = this.userData;
             var ErrorStorage = this.errors;
@@ -28181,7 +28251,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 });
             }).catch(function () {});
         },
+        cancelEditPhoto: function cancelEditPhoto() {
+            this.$set(this, 'editPhoto', false);
+        },
         changeUserPhoto: function changeUserPhoto(e) {
+            this.$set(this, 'editPhoto', true);
             var files = e.target.files || e.dataTransfer.files;
             if (!files.length) return;
 
@@ -28206,11 +28280,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, __webpack_require__(2)))
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
-window._ = __webpack_require__(154);
+window._ = __webpack_require__(155);
 
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
@@ -28263,14 +28337,14 @@ Vue.http.headers.common['X-CSRF-TOKEN'] = window.Laravel.csrfToken;
 //import io from 'socket.io-client';
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {"function"!=typeof Object.create&&(Object.create=function(t){function o(){}return o.prototype=t,new o}),function(t,o){"use strict";var i={_positionClasses:["bottom-left","bottom-right","top-right","top-left","bottom-center","top-center","mid-center"],_defaultIcons:["success","error","info","warning"],init:function(o){this.prepareOptions(o,t.toast.options),this.process()},prepareOptions:function(o,i){var s={};"string"==typeof o||o instanceof Array?s.text=o:s=o,this.options=t.extend({},i,s)},process:function(){this.setup(),this.addToDom(),this.position(),this.bindToast(),this.animate()},setup:function(){var o="";if(this._toastEl=this._toastEl||t("<div></div>",{"class":"jq-toast-single"}),o+='<span class="jq-toast-loader"></span>',this.options.allowToastClose&&(o+='<span class="close-jq-toast-single">&times;</span>'),this.options.text instanceof Array){this.options.heading&&(o+='<h2 class="jq-toast-heading">'+this.options.heading+"</h2>"),o+='<ul class="jq-toast-ul">';for(var i=0;i<this.options.text.length;i++)o+='<li class="jq-toast-li" id="jq-toast-item-'+i+'">'+this.options.text[i]+"</li>";o+="</ul>"}else this.options.heading&&(o+='<h2 class="jq-toast-heading">'+this.options.heading+"</h2>"),o+=this.options.text;this._toastEl.html(o),this.options.bgColor!==!1&&this._toastEl.css("background-color",this.options.bgColor),this.options.textColor!==!1&&this._toastEl.css("color",this.options.textColor),this.options.textAlign&&this._toastEl.css("text-align",this.options.textAlign),this.options.icon!==!1&&(this._toastEl.addClass("jq-has-icon"),-1!==t.inArray(this.options.icon,this._defaultIcons)&&this._toastEl.addClass("jq-icon-"+this.options.icon))},position:function(){"string"==typeof this.options.position&&-1!==t.inArray(this.options.position,this._positionClasses)?"bottom-center"===this.options.position?this._container.css({left:t(o).outerWidth()/2-this._container.outerWidth()/2,bottom:20}):"top-center"===this.options.position?this._container.css({left:t(o).outerWidth()/2-this._container.outerWidth()/2,top:20}):"mid-center"===this.options.position?this._container.css({left:t(o).outerWidth()/2-this._container.outerWidth()/2,top:t(o).outerHeight()/2-this._container.outerHeight()/2}):this._container.addClass(this.options.position):"object"==typeof this.options.position?this._container.css({top:this.options.position.top?this.options.position.top:"auto",bottom:this.options.position.bottom?this.options.position.bottom:"auto",left:this.options.position.left?this.options.position.left:"auto",right:this.options.position.right?this.options.position.right:"auto"}):this._container.addClass("bottom-left")},bindToast:function(){var t=this;this._toastEl.on("afterShown",function(){t.processLoader()}),this._toastEl.find(".close-jq-toast-single").on("click",function(o){o.preventDefault(),"fade"===t.options.showHideTransition?(t._toastEl.trigger("beforeHide"),t._toastEl.fadeOut(function(){t._toastEl.trigger("afterHidden")})):"slide"===t.options.showHideTransition?(t._toastEl.trigger("beforeHide"),t._toastEl.slideUp(function(){t._toastEl.trigger("afterHidden")})):(t._toastEl.trigger("beforeHide"),t._toastEl.hide(function(){t._toastEl.trigger("afterHidden")}))}),"function"==typeof this.options.beforeShow&&this._toastEl.on("beforeShow",function(){t.options.beforeShow()}),"function"==typeof this.options.afterShown&&this._toastEl.on("afterShown",function(){t.options.afterShown()}),"function"==typeof this.options.beforeHide&&this._toastEl.on("beforeHide",function(){t.options.beforeHide()}),"function"==typeof this.options.afterHidden&&this._toastEl.on("afterHidden",function(){t.options.afterHidden()})},addToDom:function(){var o=t(".jq-toast-wrap");if(0===o.length?(o=t("<div></div>",{"class":"jq-toast-wrap"}),t("body").append(o)):(!this.options.stack||isNaN(parseInt(this.options.stack,10)))&&o.empty(),o.find(".jq-toast-single:hidden").remove(),o.append(this._toastEl),this.options.stack&&!isNaN(parseInt(this.options.stack),10)){var i=o.find(".jq-toast-single").length,s=i-this.options.stack;s>0&&t(".jq-toast-wrap").find(".jq-toast-single").slice(0,s).remove()}this._container=o},canAutoHide:function(){return this.options.hideAfter!==!1&&!isNaN(parseInt(this.options.hideAfter,10))},processLoader:function(){if(!this.canAutoHide()||this.options.loader===!1)return!1;var t=this._toastEl.find(".jq-toast-loader"),o=(this.options.hideAfter-400)/1e3+"s",i=this.options.loaderBg,s=t.attr("style")||"";s=s.substring(0,s.indexOf("-webkit-transition")),s+="-webkit-transition: width "+o+" ease-in;                       -o-transition: width "+o+" ease-in;                       transition: width "+o+" ease-in;                       background-color: "+i+";",t.attr("style",s).addClass("jq-toast-loaded")},animate:function(){var t=this;if(this._toastEl.hide(),this._toastEl.trigger("beforeShow"),"fade"===this.options.showHideTransition.toLowerCase()?this._toastEl.fadeIn(function(){t._toastEl.trigger("afterShown")}):"slide"===this.options.showHideTransition.toLowerCase()?this._toastEl.slideDown(function(){t._toastEl.trigger("afterShown")}):this._toastEl.show(function(){t._toastEl.trigger("afterShown")}),this.canAutoHide()){var t=this;o.setTimeout(function(){"fade"===t.options.showHideTransition.toLowerCase()?(t._toastEl.trigger("beforeHide"),t._toastEl.fadeOut(function(){t._toastEl.trigger("afterHidden")})):"slide"===t.options.showHideTransition.toLowerCase()?(t._toastEl.trigger("beforeHide"),t._toastEl.slideUp(function(){t._toastEl.trigger("afterHidden")})):(t._toastEl.trigger("beforeHide"),t._toastEl.hide(function(){t._toastEl.trigger("afterHidden")}))},this.options.hideAfter)}},reset:function(o){"all"===o?t(".jq-toast-wrap").remove():this._toastEl.remove()},update:function(t){this.prepareOptions(t,this.options),this.setup(),this.bindToast()}};t.toast=function(t){var o=Object.create(i);return o.init(t,this),{reset:function(t){o.reset(t)},update:function(t){o.update(t)}}},t.toast.options={text:"",heading:"",showHideTransition:"fade",allowToastClose:!0,hideAfter:3e3,loader:!0,loaderBg:"#9EC600",stack:5,position:"bottom-left",bgColor:!1,textColor:!1,textAlign:"left",icon:!1,beforeShow:function(){},afterShown:function(){},beforeHide:function(){},afterHidden:function(){}}}(jQuery,window,document);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(jQuery) {var asyncGenerator = function () {
@@ -29044,7 +29118,7 @@ module.exports = Echo;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, module) {var __WEBPACK_AMD_DEFINE_RESULT__;/**
@@ -46133,10 +46207,10 @@ module.exports = Echo;
   }
 }.call(this));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(166), __webpack_require__(126)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(169), __webpack_require__(126)(module)))
 
 /***/ }),
-/* 155 */
+/* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -46385,16 +46459,16 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 155;
+webpackContext.id = 156;
 
 /***/ }),
-/* 156 */
+/* 157 */
 /***/ (function(module, exports, __webpack_require__) {
 
 !function(n,e){ true?module.exports=e():"function"==typeof define&&define.amd?define(e):(n.__locale__ru=n.__locale__ru||{},n.__locale__ru.js=e())}(this,function(){"use strict";var n={after:function(n,e){return"В поле "+n+" должна быть дата после "+e[0]+"."},alpha_dash:function(n){return"Поле "+n+" может содержать только буквы, цифры и дефис."},alpha_num:function(n){return"Поле "+n+" может содержать только буквы и цифры."},alpha_spaces:function(n){return"Поле "+n+" может содержать только буквы и пробелы."},alpha:function(n){return"Поле "+n+" может содержать только буквы."},before:function(n,e){return"В поле "+n+" должна быть дата до "+e[0]+"."},between:function(n,e){return"Поле "+n+" должно быть между "+e[0]+" и "+e[1]+"."},confirmed:function(n,e){return"Поле "+n+" не совпадает с "+e[0]+"."},date_between:function(n,e){return"Поле "+n+" должно быть между "+e[0]+" и "+e[1]+"."},date_format:function(n,e){return"Поле "+n+" должно быть в формате "+e[0]+"."},decimal:function(n,e){void 0===e&&(e=["*"]);var t=e[0];return"Поле "+n+" должно быть числовым и может содержать "+("*"===t?"":t)+" десятичных числа."},digits:function(n,e){return"Поле "+n+" должно быть числовым и точно содержать "+e[0]+" цифры."},dimensions:function(n,e){return"Поле "+n+" должно быть "+e[0]+" пикселей на "+e[1]+" пикселей."},email:function(n){return"Поле "+n+" должно быть действительным электронным адресом."},ext:function(n){return"Поле "+n+" должно быть действительным файлом."},image:function(n){return"Поле "+n+" должно быть изображением."},in:function(n){return"Поле "+n+" должно быть допустимым значением."},ip:function(n){return"Поле "+n+" должно быть действительным IP-адресом."},max:function(n,e){return"Поле "+n+" не может быть более "+e[0]+" символов."},max_value:function(n,e){return"Поле "+n+" должно быть "+e[0]+" или менее."},mimes:function(n){return"Поле "+n+" должно иметь действительный тип файла."},min:function(n,e){return"Поле "+n+" должно быть не менее "+e[0]+" символов."},min_value:function(n,e){return"Поле "+n+" должно быть "+e[0]+" или больше."},not_in:function(n){return"Поле "+n+" должно быть допустимым значением."},numeric:function(n){return"Поле "+n+" должно быть числом."},regex:function(n){return"Поле "+n+" имеет ошибочный формат."},required:function(n){return"Поле "+n+" обязательно для заполнения."},size:function(n,e){return"Поле "+n+" должно быть меньше, чем "+e[0]+" KB."},url:function(n){return"Поле "+n+" имеет ошибочный формат URL."}},e={name:"ru",messages:n,attributes:{}};return"undefined"!=typeof VeeValidate&&VeeValidate&&(VeeValidate.Validator,!0)&&VeeValidate.Validator.addLocale(e),e});
 
 /***/ }),
-/* 157 */
+/* 158 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -49800,14 +49874,14 @@ return index;
 
 
 /***/ }),
-/* 158 */
+/* 159 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(3)(
   /* script */
   __webpack_require__(147),
   /* template */
-  __webpack_require__(163),
+  __webpack_require__(165),
   /* scopeId */
   null,
   /* cssModules */
@@ -49834,14 +49908,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 159 */
+/* 160 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(3)(
   /* script */
   __webpack_require__(148),
   /* template */
-  __webpack_require__(162),
+  __webpack_require__(164),
   /* scopeId */
   null,
   /* cssModules */
@@ -49868,14 +49942,48 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 160 */
+/* 161 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(3)(
   /* script */
   __webpack_require__(149),
   /* template */
-  __webpack_require__(165),
+  __webpack_require__(166),
+  /* scopeId */
+  null,
+  /* cssModules */
+  null
+)
+Component.options.__file = "/var/www/laravel.iused.top/resources/assets/js/components/ProfileStatus.vue"
+if (Component.esModule && Object.keys(Component.esModule).some(function (key) {return key !== "default" && key !== "__esModule"})) {console.error("named exports are not supported in *.vue files.")}
+if (Component.options.functional) {console.error("[vue-loader] ProfileStatus.vue: functional components are not supported with templates, they should use render functions.")}
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-92466b2a", Component.options)
+  } else {
+    hotAPI.reload("data-v-92466b2a", Component.options)
+  }
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Component = __webpack_require__(3)(
+  /* script */
+  __webpack_require__(150),
+  /* template */
+  __webpack_require__(168),
   /* scopeId */
   null,
   /* cssModules */
@@ -49902,14 +50010,14 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 161 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Component = __webpack_require__(3)(
   /* script */
-  __webpack_require__(150),
+  __webpack_require__(151),
   /* template */
-  __webpack_require__(164),
+  __webpack_require__(167),
   /* scopeId */
   null,
   /* cssModules */
@@ -49936,7 +50044,7 @@ module.exports = Component.exports
 
 
 /***/ }),
-/* 162 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50084,7 +50192,7 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "href": "/password/reset"
     }
-  }, [_vm._v("\n            Забыли пароль?\n        ")])])
+  })])
 }]}
 module.exports.render._withStripped = true
 if (false) {
@@ -50095,7 +50203,7 @@ if (false) {
 }
 
 /***/ }),
-/* 163 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50118,7 +50226,30 @@ if (false) {
 }
 
 /***/ }),
-/* 164 */
+/* 166 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
+  return _c('div', [_c('button', {
+    staticClass: "btn btn-block ",
+    class: {
+      'btn-danger': _vm.setStatus, 'btn-success': !_vm.setStatus
+    },
+    on: {
+      "click": _vm.toggleStatus
+    }
+  }, [_vm._v(_vm._s(_vm.text))])])
+},staticRenderFns: []}
+module.exports.render._withStripped = true
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+     require("vue-hot-reload-api").rerender("data-v-92466b2a", module.exports)
+  }
+}
+
+/***/ }),
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50145,7 +50276,11 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     class: {
       'has-danger': _vm.errors.has('photo')
     }
-  }, [_c('img', {
+  }, [_c('label', {
+    attrs: {
+      "for": "photo"
+    }
+  }, [_vm._v("Фото профиля")]), _vm._v(" "), _c('img', {
     directives: [{
       name: "show",
       rawName: "v-show",
@@ -50156,11 +50291,13 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     attrs: {
       "src": _vm.previewPhoto
     }
-  }), _vm._v(" "), _c('label', {
-    attrs: {
-      "for": "photo"
-    }
-  }, [_vm._v("Фото профиля")]), _vm._v(" "), _c('input', {
+  }), _vm._v(" "), _c('input', {
+    directives: [{
+      name: "validate",
+      rawName: "v-validate",
+      value: ('image'),
+      expression: "'image'"
+    }],
     staticClass: "form-control",
     attrs: {
       "id": "photo",
@@ -50178,7 +50315,21 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       expression: "errors.has('photo')"
     }],
     staticClass: "form-control-feedback is-danger"
-  }, [_vm._v(_vm._s(_vm.errors.first('photo')))])]), _vm._v(" "), _c('div', {
+  }, [_vm._v(_vm._s(_vm.errors.first('photo')))]), _vm._v(" "), _c('button', {
+    directives: [{
+      name: "show",
+      rawName: "v-show",
+      value: (_vm.editPhoto),
+      expression: "editPhoto"
+    }],
+    staticClass: "btn btn-sm btn-danger btn-block",
+    attrs: {
+      "type": "button"
+    },
+    on: {
+      "click": _vm.cancelEditPhoto
+    }
+  }, [_vm._v("Отменить редактирование фото")])]), _vm._v(" "), _c('div', {
     staticClass: "form-group",
     class: {
       'has-danger': _vm.errors.has('first_name')
@@ -50416,8 +50567,8 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
     directives: [{
       name: "validate",
       rawName: "v-validate",
-      value: ('required|min:3'),
-      expression: "'required|min:3'"
+      value: ('required|url'),
+      expression: "'required|url'"
     }, {
       name: "model",
       rawName: "v-model",
@@ -50512,7 +50663,7 @@ if (false) {
 }
 
 /***/ }),
-/* 165 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c=_vm._self._c||_h;
@@ -50529,51 +50680,6 @@ module.exports={render:function (){var _vm=this;var _h=_vm.$createElement;var _c
       }
     }
   }, [_c('div', {
-    staticClass: "form-group",
-    class: {
-      'has-danger': _vm.errors.has('name')
-    }
-  }, [_c('label', {
-    attrs: {
-      "for": "email"
-    }
-  }, [_vm._v("Фио")]), _vm._v(" "), _c('input', {
-    directives: [{
-      name: "validate",
-      rawName: "v-validate",
-      value: ('required|min:3'),
-      expression: "'required|min:3'"
-    }, {
-      name: "model",
-      rawName: "v-model",
-      value: (_vm.userData.name),
-      expression: "userData.name"
-    }],
-    staticClass: "form-control",
-    attrs: {
-      "id": "name",
-      "type": "text",
-      "name": "name",
-      "autofocus": ""
-    },
-    domProps: {
-      "value": (_vm.userData.name)
-    },
-    on: {
-      "input": function($event) {
-        if ($event.target.composing) { return; }
-        _vm.userData.name = $event.target.value
-      }
-    }
-  }), _vm._v(" "), _c('span', {
-    directives: [{
-      name: "show",
-      rawName: "v-show",
-      value: (_vm.errors.has('name')),
-      expression: "errors.has('name')"
-    }],
-    staticClass: "form-control-feedback is-danger"
-  }, [_vm._v(_vm._s(_vm.errors.first('name')))])]), _vm._v(" "), _c('div', {
     staticClass: "form-group",
     class: {
       'has-danger': _vm.errors.has('email')
@@ -50721,7 +50827,7 @@ if (false) {
 }
 
 /***/ }),
-/* 166 */
+/* 169 */
 /***/ (function(module, exports) {
 
 var g;
@@ -50748,7 +50854,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 167 */
+/* 170 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(127);

@@ -1,4 +1,5 @@
 {
+	"appKey": "dsadasd1123",
 	"authHost": "http://laravel.iused.top",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [

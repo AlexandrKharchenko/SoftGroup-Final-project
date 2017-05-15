@@ -14,6 +14,9 @@ class AccountController extends Controller
 
     public function likeProfile()
     {
-        return view('front-end/account/like-profile');
+        $data = [
+            'profiles' => \Auth::user()->likes()->paginate(10)
+        ];
+        return view('front-end/account/like-profile' , $data);
     }
 }
